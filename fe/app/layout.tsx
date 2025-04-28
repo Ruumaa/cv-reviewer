@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import GridBackground from '@/components/layouts/GridBackground';
 import Navbar from './components/Navbar';
-import { Toaster } from 'sonner';
+import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
   title: 'Revume',

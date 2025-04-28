@@ -41,9 +41,38 @@ app.post(
 
       fs.unlinkSync(file.path);
 
-      const prompt = `Tolong review CV berikan nilai 1-100% untuk profil, summary, pengalaman kerja, pendidikan, keahlian, dan portofolio \n\n berikan juga alasan singkat namun jelas pada masing masing point tersebut dan berikan juga bagian mana yang dapat diperbaiki atau jika sudah terlihat baik beritahu saja kalau tidak perlu ada perubahan \n\n berikut adalah isi CV nya:\n\n${textContent}`;
-
-      console.log(textContent, '<<<<<<<<<<<');
+      const prompt = `
+      Anda adalah reviewer CV profesional.
+      
+      Berikan penilaian angka (1-100) untuk setiap bagian berikut menggunakan bahasa yang santai dan sopan:
+      - Profil
+      - Summary
+      - Pengalaman Kerja
+      - Pendidikan
+      - Keahlian
+      - Portofolio
+      
+      Untuk setiap bagian, berikan:
+      - Feedback singkat (tidak lebih dari 3-5 kalimat) berisi kelebihan dan kekurangan.
+      - Beritahu kekurangannya (termasuk grammar atau susunan kata) dan beritahu juga yang harus diperbaiki dari kekurangan itu.
+      
+      **Format output harus JSON valid** seperti contoh berikut:
+      {
+        "profil": { "nilai": 80, "feedback": "...", "kelebihan": "...", kekurangan: "...", perbaikan : ["..."] },
+        "summary": { ... },
+        "pengalaman_kerja": { ... },
+        "pendidikan": { ... },
+        "keahlian": { ... },
+        "portofolio": { ... },
+        "nilai_total": 82,
+        "kesimpulan": "..."
+      }
+      
+      Berikut isi CV yang harus direview:
+      """ 
+      ${textContent}
+      """
+      `;
 
       async function generateReview() {
         const response = await ai.models.generateContent({

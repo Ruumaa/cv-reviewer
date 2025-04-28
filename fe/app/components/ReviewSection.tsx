@@ -8,16 +8,15 @@ import React, { useState } from 'react';
 
 const ReviewSection = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [review, setReview] = useState('');
+  const [review, setReview] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async () => {
     try {
       setIsLoading(true);
-      console.log(!file);
       if (!file)
-        return toast('Gagal mereview!', {
-          description: 'Masukkan file CV-mu dalam format PDF/docx',
+        return toast.error('Gagal mereview!', {
+          description: 'Masukkan file C V-mu dalam format pdf/docx',
         });
 
       const formData = new FormData();
@@ -28,9 +27,17 @@ const ReviewSection = () => {
         body: formData,
       });
 
-      const data = await res.json();
-      console.log(data, '<<<<<<<<<<<<<<<<<');
-      setReview(data.review || data.error);
+      const response = await res.json();
+      console.log(response, '<<<<<<<');
+      const rawReview = response.review;
+
+      const cleaned = rawReview
+        .replace(/```json/, '')
+        .replace(/```/, '')
+        .trim();
+
+      const parsedData = JSON.parse(cleaned);
+      setReview(parsedData || response.error);
     } catch (error) {
       console.error(error);
     } finally {
@@ -45,28 +52,16 @@ const ReviewSection = () => {
         <Input
           id="picture"
           type="file"
-          className="bg-background"
+          className="bg-background cursor-pointer"
           onChange={(e) => setFile(e.target.files?.[0] ?? null)}
         />
         <Button onClick={() => handleUpload()} disabled={isLoading}>
           {isLoading ? 'Sedang Mereview...' : 'Review CV'}
         </Button>
-        <pre className="whitespace-pre-wrap mt-[20px]">{review}</pre>
+        <pre className="whitespace-pre-wrap mt-[20px]">
+          {review ? JSON.stringify(review, null, 2) : ''}
+        </pre>
       </div>
-
-      <Button
-        onClick={() =>
-          toast('Event has been created', {
-            description: 'Sunday, December 03, 2023 at 9:00 AM',
-            action: {
-              label: 'Undo',
-              onClick: () => console.log('Undo'),
-            },
-          })
-        }
-      >
-        Show Toast
-      </Button>
     </section>
   );
 };
