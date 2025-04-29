@@ -79,12 +79,12 @@ app.post(
           model: 'gemini-2.0-flash',
           contents: [{ parts: [{ text: prompt }] }],
         });
-        return response.text;
+        return response;
       }
 
       const result = await generateReview();
 
-      res.json({ review: result });
+      res.json({ review: result.text });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Gagal memproses file.' });

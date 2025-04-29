@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import GridBackground from '@/components/layouts/GridBackground';
 import Navbar from './components/Navbar';
 import { Toaster } from '@/components/ui/sonner';
+import GridBackground from '@/components/layouts/GridBackground';
 
 export const metadata: Metadata = {
   title: 'Revume',
@@ -17,9 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="relative w-ful min-h-screen overflow-hidden">
+        <div className="relative w-full min-h-screen overflow-hidden">
           <GridBackground />
-          <div className="flex items-center justify-center pt-10">
+          <div className="absolute flex items-center justify-center top-10 w-full">
             <Navbar />
           </div>
           {children}
