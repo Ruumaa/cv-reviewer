@@ -14,6 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import ValueColor from './ValueColor';
+import Divider from './Divider';
+import { dummyReview } from './dummy';
+import { ScrollArea } from '@/components/ui/scroll-area';
 interface SectionDetail {
   nilai: number;
   feedback: string;
@@ -35,7 +39,9 @@ interface ResumeEvaluation {
 
 const ReviewSection = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [review, setReview] = useState<ResumeEvaluation | null>();
+  const [review, setReview] = useState<ResumeEvaluation | null>(
+    () => dummyReview
+  );
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpload = async () => {
@@ -55,7 +61,6 @@ const ReviewSection = () => {
       });
 
       const response = await res.json();
-      console.log(response, '<<<<<<<');
       const rawReview = response.review;
 
       const cleaned = rawReview
@@ -71,7 +76,6 @@ const ReviewSection = () => {
       setIsLoading(false);
     }
   };
-
   return (
     <section className="py-20">
       {/* <div className="max-w-sm">
@@ -79,9 +83,9 @@ const ReviewSection = () => {
           {review ? JSON.stringify(review, null, 2) : ''}
         </pre>
       </div> */}
-      <div className="h-screen">
+      <div className="h-screen overflow-hidden">
         <div className="not-prose flex w-full items-center justify-center z-15 relative border-2 mb-5 min-h-full border-border bg-white  bg-[15px_20px] bg-[linear-gradient(to_right,#8080804D_1px,transparent_1px),linear-gradient(to_bottom,#80808090_1px,transparent_1px)] shadow-shadow [background-size:30px_30px]">
-          <Tabs defaultValue="input" className="max-w-[400px]">
+          <Tabs defaultValue="input" className="max-w-xl font-montserrat">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="input">Input</TabsTrigger>
               <TabsTrigger value="review">Review</TabsTrigger>
@@ -92,7 +96,7 @@ const ReviewSection = () => {
                   <CardTitle>Input</CardTitle>
                   <CardDescription>
                     Unggah CV atau Resume Anda, dan biarkan{' '}
-                    <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-rose-500">
+                    <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-rose-500 ">
                       Gemini AI
                     </span>{' '}
                     memberikan evaluasi mendalam secara instan.
@@ -112,38 +116,299 @@ const ReviewSection = () => {
                   <Button
                     onClick={() => handleUpload()}
                     disabled={isLoading}
-                    className="w-full cursor-pointer"
+                    className="w-full cursor-pointer font-bold"
                   >
                     {isLoading ? 'Sedang Mereview...' : 'Review CV'}
                   </Button>
                 </CardFooter>
               </Card>
             </TabsContent>
-            {/* TODO -- Styling Review */}
             <TabsContent value="review">
               <Card>
-                <CardHeader>
-                  <CardTitle>Review</CardTitle>
-                  <CardDescription>
-                    Change your password here. After saving, you&apos;ll be
-                    logged out.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="grid gap-6">
-                  <div className="grid gap-3">
-                    <Label htmlFor="tabs-demo-current">Current password</Label>
-                    <Input id="tabs-demo-current" type="password" />
-                  </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="tabs-demo-new">New password</Label>
-                    <Input id="tabs-demo-new" type="password" />
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button className="w-full" variant="neutral">
-                    Save password
-                  </Button>
-                </CardFooter>
+                <ScrollArea className="h-[550px]">
+                  <CardHeader>
+                    <CardTitle className="font-semibold">
+                      Kelengkapan CV
+                    </CardTitle>
+                    <CardDescription>
+                      <div className="flex justify-between items-center my-3">
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor value={review?.profil.nilai} />
+                          </p>{' '}
+                          <p>Profil</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor value={review?.summary.nilai} />
+                          </p>{' '}
+                          <p>Summary</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor
+                              value={review?.pengalaman_kerja.nilai}
+                            />
+                          </p>{' '}
+                          <p>Pengalaman Kerja</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor value={review?.pendidikan.nilai} />
+                          </p>{' '}
+                          <p>Pendidikan</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor value={review?.keahlian.nilai} />
+                          </p>{' '}
+                          <p>Keahlian</p>
+                        </div>
+                        <div className="flex flex-col items-center justify-center">
+                          <p className="font-pixelify-sans text-2xl font-semibold">
+                            <ValueColor value={review?.portofolio.nilai} />
+                          </p>{' '}
+                          <p>Portofolio</p>
+                        </div>
+                      </div>
+                    </CardDescription>
+                  </CardHeader>
+                  {/* divider */}
+                  <Divider />
+                  {/* PROFILE */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Profile (<ValueColor value={review?.profil.nilai} />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.profil.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.profil.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.profil.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.profil.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                  <Divider />
+                  {/* SUMMARY */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Summary (<ValueColor value={review?.summary.nilai} />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.summary.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.summary.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.summary.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.summary.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                  <Divider />
+                  {/* PENGALAMAN KERJA */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Pengalaman Kerja (
+                        <ValueColor
+                          value={review?.pengalaman_kerja.nilai}
+                        />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pengalaman_kerja.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pengalaman_kerja.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pengalaman_kerja.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.pengalaman_kerja.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                  <Divider />
+                  {/* PENDIDIKAN */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Pendidikan (
+                        <ValueColor value={review?.pendidikan.nilai} />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pendidikan.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pendidikan.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.pendidikan.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.pendidikan.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                  <Divider />
+                  {/* KEAHLIAN */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Keahlian (
+                        <ValueColor value={review?.keahlian.nilai} />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.keahlian.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.keahlian.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.keahlian.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.keahlian.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                  <Divider />
+                  {/* PORTOFOLIO */}
+                  <CardContent>
+                    {/* feedbaack */}
+                    <CardTitle className="font-semibold">
+                      <p className="flex gap-x-2 items-center">
+                        Portofolio (
+                        <ValueColor value={review?.portofolio.nilai} />){' '}
+                      </p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.portofolio.feedback}
+                    </CardDescription>
+                    {/* kelebihan */}
+                    <CardTitle className="font-semibold text-green-600">
+                      <p>Kelebihan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.portofolio.kelebihan}
+                    </CardDescription>
+                    {/* kekurangan */}
+                    <CardTitle className="font-semibold text-yellow-500">
+                      <p>Kekurangan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      {review?.portofolio.kekurangan}
+                    </CardDescription>
+                    {/* perbaikan */}
+                    <CardTitle className="font-semibold">
+                      <p>Perbaikan</p>
+                    </CardTitle>
+                    <CardDescription className="my-3">
+                      <ul className="list-disc pl-5">
+                        {review?.portofolio.perbaikan.map((p, i) => (
+                          <li key={i}>{p}</li>
+                        ))}
+                      </ul>
+                    </CardDescription>
+                  </CardContent>
+                </ScrollArea>
               </Card>
             </TabsContent>
           </Tabs>

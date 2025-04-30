@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // fontFamily: {
+      //   montserrat: [`var(--font-montserrat)`],
+      //   inter: [`var(--font-inter)`],
+      // },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
