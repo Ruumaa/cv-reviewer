@@ -1,3 +1,5 @@
+'use client';
+
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Marquee from '@/components/ui/marquee';
@@ -42,7 +44,15 @@ export default function Home() {
                 </a>
               </p>
               {/* action button */}
-              <Button className="mt-10">Mulai Sekarang</Button>
+              <Button
+                className="mt-10 cursor-pointer"
+                onClick={() => {
+                  const section = document.getElementById('review');
+                  section?.scrollIntoView({ behavior: 'smooth' });
+                }}
+              >
+                Mulai Sekarang
+              </Button>
             </div>
           </BaseLayout>
         </div>
