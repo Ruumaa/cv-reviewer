@@ -23,15 +23,15 @@ import {
   BriefcaseBusiness,
   ChartPie,
   FileText,
-  FileUser,
   GraduationCap,
   Sparkles,
+  Trophy,
   UserRound,
 } from 'lucide-react';
 import Divider from './Divider';
-
 const ReviewSection = () => {
-  const { setFile, handleUpload, isLoading, review, tab, setTab } = useUpload();
+  const { file, setFile, handleUpload, isLoading, review, tab, setTab } =
+    useUpload();
   const sections: { key: SectionKey; label: string; icon?: React.ReactNode }[] =
     [
       { key: 'profil', label: 'Data Diri', icon: <UserRound size={20} /> },
@@ -64,7 +64,9 @@ const ReviewSection = () => {
           >
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="input">Input</TabsTrigger>
-              <TabsTrigger value="review">Review</TabsTrigger>
+              <TabsTrigger value="review" disabled={!review}>
+                Review
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="input">
               <Card>
@@ -86,6 +88,11 @@ const ReviewSection = () => {
                       type="file"
                       onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                     />
+                    {file && (
+                      <p className="text-sm text-gray-600 mt-1 italic">
+                        {file.name}
+                      </p>
+                    )}
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -101,54 +108,64 @@ const ReviewSection = () => {
             </TabsContent>
             <TabsContent value="review">
               <Card>
-                <ScrollArea className="h-[550px]">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-start gap-x-1 text-xl font-semibold">
-                      <ChartPie size={30} className="text-main-foreground" />
-                      <p>Kelengkapan CV</p>
-                    </CardTitle>
-                    <CardDescription>
-                      <div className="flex justify-between items-center my-3">
-                        {sections.map(({ key, label }) => (
-                          <div
-                            className="flex flex-col items-center justify-center"
-                            key={key}
-                          >
-                            <p className="font-montserrat text-2xl font-semibold">
-                              <ValueColor value={review?.[key].nilai} />
-                            </p>{' '}
-                            <p>{label}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardDescription>
-                  </CardHeader>
-                  {sections.map((sectionKey, i) => (
-                    <Fragment key={i}>
-                      <ReviewDetail
-                        title={sectionKey.label}
-                        data={review[sectionKey.key] as SectionDetail}
-                        icon={sectionKey.icon}
-                      />
-                    </Fragment>
-                  ))}
-                  <Divider />
-                  {/* Kesimpulan  */}
-                  <CardContent className="flex mb-8">
-                    <div className="w-1/3 flex flex-col justify-center items-center">
-                      <FileUser size={100} />
-                      <p className="font-montserrat text-2xl font-semibold mt-5">
-                        {review?.nilai_total} / 100
-                      </p>
-                    </div>
-                    <div className="w-2/3">
-                      <CardTitle className="font-montserrat text-2xl font-semibold">
-                        Kesimpulan
+                {review ? (
+                  <ScrollArea className="h-[550px]">
+                    <CardHeader>
+                      <CardTitle className="flex items-center justify-start gap-x-1 text-xl font-semibold">
+                        <ChartPie size={30} className="text-main-foreground" />
+                        <p>Kelengkapan CV</p>
                       </CardTitle>
-                      <CardDescription>{review?.kesimpulan}</CardDescription>
-                    </div>
-                  </CardContent>
-                </ScrollArea>
+                      <CardDescription>
+                        <div className="flex justify-between items-center my-3">
+                          {sections.map(({ key, label }) => (
+                            <div
+                              className="flex flex-col items-center justify-center"
+                              key={key}
+                            >
+                              <p className="font-montserrat text-2xl font-semibold">
+                                <ValueColor value={review?.[key].nilai} />
+                              </p>{' '}
+                              <p>{label}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </CardDescription>
+                    </CardHeader>
+                    {sections.map((sectionKey, i) => (
+                      <Fragment key={i}>
+                        <ReviewDetail
+                          title={sectionKey.label}
+                          data={review[sectionKey.key] as SectionDetail}
+                          icon={sectionKey.icon}
+                        />
+                      </Fragment>
+                    ))}
+                    <Divider />
+                    {/* Kesimpulan  */}
+                    <CardContent className="flex mb-8 gap-x-8  bg-main border-2 border-border shadow-shadow rounded-lg p-5 mx-5 ">
+                      <div className="w-1/3 flex flex-col justify-center items-center">
+                        <Trophy size={100} />
+                        <p className="text-2xl font-semibold mt-5 flex items-center gap-x-2 justify-center">
+                          <ValueColor
+                            value={review?.nilai_total}
+                            withPercent={false}
+                          />{' '}
+                          / 100{' '}
+                        </p>
+                      </div>
+                      <div className="w-2/3">
+                        <CardTitle className="font-montserrat text-2xl font-semibold mb-1">
+                          Kesimpulan
+                        </CardTitle>
+                        <CardDescription className="text-sm leading-relaxed whitespace-pre-wrap">
+                          {review?.kesimpulan}
+                        </CardDescription>
+                      </div>
+                    </CardContent>
+                  </ScrollArea>
+                ) : (
+                  <p className="text-center">Tidak ada review</p>
+                )}
               </Card>
             </TabsContent>
           </Tabs>

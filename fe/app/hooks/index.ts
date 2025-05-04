@@ -1,12 +1,11 @@
 import { ResumeEvaluation } from '@/types';
 import { useState } from 'react';
-import { dummyReview } from '../components/dummy';
 import { toast } from 'sonner';
 
 export const useUpload = () => {
   const [file, setFile] = useState<File | null>(null);
   const [tab, setTab] = useState('input');
-  const [review, setReview] = useState<ResumeEvaluation>(() => dummyReview);
+  const [review, setReview] = useState<ResumeEvaluation>();
   const [isLoading, setIsLoading] = useState(false);
   const handleUpload = async () => {
     try {
@@ -56,5 +55,5 @@ export const useUpload = () => {
     }
   };
 
-  return { handleUpload, setFile, review, isLoading, tab, setTab };
+  return { handleUpload, file, setFile, review, isLoading, tab, setTab };
 };
