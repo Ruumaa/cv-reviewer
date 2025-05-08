@@ -29,7 +29,7 @@ export const useUpload = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await fetch('http://localhost:5000/upload', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/upload`, {
         method: 'POST',
         body: formData,
       });
